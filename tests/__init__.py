@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 import datetime
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from nose.tools import eq_
 
 try:
     from io import BytesIO
 except ImportError:
     # 2to3 translates cStringIO to io, so this looks silly on Python 3.x
-    from cStringIO import StringIO as BytesIO
+    from io import StringIO as BytesIO
 
 import simples3
 from simples3.utils import rfc822_fmtdate
@@ -20,16 +20,16 @@ class MockHTTPMessage(object):
         if not d:
             return
         if hasattr(d, "iteritems"):
-            d = d.iteritems()
+            d = iter(d.items())
         for n, v in d:
             self[n] = v
 
-    def __iter__(self): return self.iteritems()
-    def __getitem__(self, n): return self._m[unicode(n).lower()]
-    def __setitem__(self, n, v): self._m[unicode(n).lower()] = v
-    def __delitem__(self, n): del self._m[unicode(n).lower()]
-    def items(self): return self._m.items()
-    def iteritems(self): return self._m.iteritems()
+    def __iter__(self): return iter(self.items())
+    def __getitem__(self, n): return self._m[str(n).lower()]
+    def __setitem__(self, n, v): self._m[str(n).lower()] = v
+    def __delitem__(self, n): del self._m[str(n).lower()]
+    def items(self): return list(self._m.items())
+    def iteritems(self): return iter(self._m.items())
 
 class MockHTTPResponse(object):
     def __init__(self, fp, headers, url, code=None):
@@ -51,7 +51,7 @@ class MockHTTPResponse(object):
     def getcode(self): return self.code
     def geturl(self): return self.url
 
-class MockHTTPHandler(urllib2.HTTPHandler):
+class MockHTTPHandler(urllib.request.HTTPHandler):
     def __init__(self, resps, reqs):
         self.resps = resps
         self.reqs = reqs
@@ -62,7 +62,7 @@ class MockHTTPHandler(urllib2.HTTPHandler):
         return resp
 
     def http_request(self, req):
-        req = urllib2.HTTPHandler.http_request(self, req)
+        req = urllib.request.HTTPHandler.http_request(self, req)
         self.reqs.append(req)
         return req
 
@@ -76,7 +76,7 @@ class MockBucketMixin(object):
 
     def build_opener(self):
         mockhttp = MockHTTPHandler(self.mock_responses, self.mock_requests)
-        return urllib2.build_opener(mockhttp)
+        return urllib.request.build_opener(mockhttp)
 
     def add_resp(self, path, headers, data, status="200 OK"):
         fp = BytesIO(data.encode("utf-8"))

@@ -1,6 +1,6 @@
-from __future__ import with_statement
 
-import StringIO
+
+import io
 
 from nose.tools import eq_
 
@@ -28,7 +28,7 @@ def _put_contents(bucket, key, contents):
 def _put_file_contents(bucket, key, contents):
     bucket.add_resp("/%s" % key, H("application/xml"), "OK!")
 
-    fp = StringIO.StringIO(contents)
+    fp = io.StringIO(contents)
     try:
         bucket.put_file(key, fp, size=len(contents))
     finally:

@@ -3,3 +3,15 @@ MANIFEST
 .DS_Store
 build/
 dist/
+simples3.egg-info/PKG-INFO
+simples3.egg-info/SOURCES.txt
+simples3.egg-info/dependency_links.txt
+simples3.egg-info/top_level.txt
+simples3/__init__.py.bak
+simples3/bucket.py.bak
+simples3/gae.py.bak
+simples3/streaming.py.bak
+simples3/utils.py.bak
+tests/__init__.py.bak
+tests/test_bucket.py.bak
+tests/test_streaming.py.bak

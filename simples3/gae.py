@@ -4,8 +4,8 @@ Use as you would normally do with :mod:`simples3`, only instead of
 :class:`simples3.S3Bucket`, use :class:`simples3.gae.AppEngineS3Bucket`.
 """
 
-import urllib2
-from StringIO import StringIO
+import urllib.request, urllib.error, urllib.parse
+from io import StringIO
 from urllib import addinfourl
 from google.appengine.api import urlfetch
 from simples3.bucket import S3Bucket
@@ -25,11 +25,11 @@ def _http_open(req):
     rv.msg = "?"
     return rv
 
-class UrlFetchHTTPHandler(urllib2.HTTPHandler):
+class UrlFetchHTTPHandler(urllib.request.HTTPHandler):
     def http_open(self, req):
         return _http_open(req)
 
-class UrlFetchHTTPSHandler(urllib2.HTTPSHandler):
+class UrlFetchHTTPSHandler(urllib.request.HTTPSHandler):
     def https_open(self, req):
         return _http_open(req)
 
@@ -45,5 +45,5 @@ class AppEngineS3Bucket(S3Bucket):
         # Giving urllib2 a ProxyHandler without any proxies avoids this look-up
         # trickery, and so is beneficial to our ends and goals in this pickle
         # of a situation.
-        return urllib2.build_opener(UrlFetchHTTPHandler, UrlFetchHTTPSHandler,
-                                    urllib2.ProxyHandler(proxies={}))
+        return urllib.request.build_opener(UrlFetchHTTPHandler, UrlFetchHTTPSHandler,
+                                    urllib.request.ProxyHandler(proxies={}))

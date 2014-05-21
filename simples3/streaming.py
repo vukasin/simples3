@@ -9,7 +9,7 @@ Usage::
 """
 
 import os
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from simples3.bucket import S3Bucket
 
 class ProgressCallingFile(object):
@@ -90,7 +90,7 @@ else:
     class PosterStreamingMixin(StreamingMixin):
         @classmethod
         def build_opener(cls):
-            return urllib2.build_opener(StreamingHTTPHandler)
+            return urllib.request.build_opener(StreamingHTTPHandler)
 
     default_stream_mixin = PosterStreamingMixin
 
