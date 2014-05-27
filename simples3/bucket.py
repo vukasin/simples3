@@ -1,7 +1,5 @@
 """Bucket manipulation"""
 
-
-
 import time
 import hmac
 import hashlib
@@ -147,7 +145,9 @@ class S3Request(object):
                 ps.append(self.subresource)
             if self.args:
                 args = self.args
-                if hasattr(args, "items"):
+                if hasattr(args, "iteritems"):
+                    args = iter(args.iteritems())
+                elif hasattr(args, "items"):
                     args = iter(args.items())
                 args = ((quote_plus(k), quote_plus(v)) for (k, v) in args)
                 args = arg_sep.join("%s=%s" % i for i in args)
